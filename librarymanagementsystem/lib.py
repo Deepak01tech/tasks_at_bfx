@@ -1,81 +1,80 @@
 class Book:
-    def __init__(self,bookid,title, author, quantity ):
-        self.bookid = bookid
-        self.title=title
-        self.author=author
-        self.quantity=quantity
+    def __init__(self ):
+        # self.bookid = bookid
+        # self.title=title
+        # self.author=author
+        # self.quantity=quantity
         self.issue_books=[]
         self.person_info=[]
         self.books=[]
 
-
-    def display_books_info(self):
-        print(f"Id :{self.bookid},Title :{self.title},Author :{self.author},quantity :{self.quantity}") 
-
-    def check_book_availability(self):
-        return self.quantity > 0
-    
-        
+    def add_book(self, book):
+        self.books.append(book)
     
     def addnewbook(self):
         book_id=int(input("enter book id : "))
-        if any(book.book_id == book_id for book in self.books):
-            print("Book with the same id already exists")
-            return
+        
+        for book in self.books:
+            if book[0]==book_id:
+                print("Book with the same id already exists")
+                return
         bookname =input("enter the book name : ")
         author= input("enter the author name: ")
         quantity=int(input("enter the quantity of books: "))
 
-        new_book=Book(book_id,bookname,author,quantity)
+        new_book=[book_id,bookname,author,quantity]
         self.add_book(new_book)
         print("book added successfully ")
-        new_book.display_books_info()
+        
 
-        with open("book_record","a") as file:
-            file.write(new_book)
+        # with open("book_record","a") as file:
+            # file.write(new_book)
+        with open("book_record.txt","a") as file:
+            file.write(f"{book_id},{bookname},{author},{quantity}\n")
+
         return new_book
     
     def issue_book(self):
-        name=input("enter the name : ")
+        name=input("enter the name of issuer : ")
         id = input ("enter the id : ")
         book_name=input("enter the book name to be issued : ")
-        if book_name.check_book_availability():
-            self.issue_books.append(book_name)
-            self.person_info.append([name,id])
+        
+
+        for book in self.books:
+            if book[1]==book_name:
+                if book[3]>0:
+                    book[3]-=1
+                    self.issue_books.append(book_name)
+                    self.person_info.append([name,id])
+                    print(f"'{book_name}' has been issued to {name}")
+                    return
+                else:
+                    print(f"'{book_name}' is not available for issuing")
+                    return
 
     def view_all_books(self):
         if self.books:
             print("books in the library : ")
+
             for book in self.books:
-                book.self.display_book_info()
+               
+                print(f"Id :{book[0]},Title :{book[1]},Author :{book[2]},quantity :{book[3]}")
 
         else:
             print("no books available in the library")
 
     
-    
     def returnbook(self,book):
         if book in self.issue_books:
             self.issue_books.remove(book)
-            print(f"{self.person_info} has returned '{self.title}")
-        # self.pname=pname
-        # self.pid=pid
-        # self.bookname=bookname
-        # self.bookid=bookid
-
-    
-    
+            print(f"'{book}' has been returned successfully")
+        else:
+            print(f"'{book}' was not issued from this library")
+     
     
 def main():
     books=Book()
-    book1 = books(1, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 5)
-    book2 = books(2, "The Hobbit", "J.R.R. Tolkien", 3)
-    book3 = books(3, "1984", "George Orwell", 2)
-
-    books.addnewbook(book1)
-    books.addnewbook(book2)
-    books.addnewbook(book3)
-
+    
     while True:
         print("\nWelcome to the Library Management System")
         print("1. add new books")
@@ -89,21 +88,40 @@ def main():
         option= input("enter the choice from above options: ")
 
         if option == '1':
-            Book.addnewbook()
+            books.addnewbook()
         elif option=='2':
-            Book.issue_book()
 
-
+            books.issue_book()
             
         elif option=='3':
-            Book.returnbook()
+            
+            book_name=input("enter the book name to be returned : ")
+            
+            for book in books.books:
+                if book[1]==book_name:
+                    book[3]+=1
+                    print(f"'{book_name}' has been returned successfully")
+                    break
 
             
         elif option == '4':
-            Book.check_book_availability()
+            
+            book_name=input("enter the book name to check availability : ")
+            for book in books.books:
+                if book[1]==book_name:
+                    if book[3]>0:
+                        print(f"'{book_name}' is available")
+                    else:
+                        print(f"'{book_name}' is not available")
+                    break
+            else:
+                print(f"'{book_name}' does not exist in the library")
+            
             
         elif option == '5':
-            Book.view_all_books()
+            
+            books.view_all_books()
+
         elif option == '6':
             print("goodbye")
             break
