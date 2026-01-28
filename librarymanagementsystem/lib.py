@@ -13,7 +13,6 @@ class Book:
     
     def addnewbook(self):
         book_id=int(input("enter book id : "))
-        
         for book in self.books:
             if book[0]==book_id:
                 print("Book with the same id already exists")
@@ -31,15 +30,12 @@ class Book:
             # file.write(new_book)
         with open("book_record.txt","a") as file:
             file.write(f"{book_id},{bookname},{author},{quantity}\n")
-
         return new_book
     
     def issue_book(self):
         name=input("enter the name of issuer : ")
         id = input ("enter the id : ")
         book_name=input("enter the book name to be issued : ")
-        
-
         for book in self.books:
             if book[1]==book_name:
                 if book[3]>0:
@@ -73,8 +69,9 @@ class Book:
      
     
 def main():
+
     books=Book()
-    
+
     while True:
         print("\nWelcome to the Library Management System")
         print("1. add new books")
@@ -82,7 +79,6 @@ def main():
         print("3. return book")
         print("4. check book availability")
         print("5. view all books")
-
         print("6. Exit")
 
         option= input("enter the choice from above options: ")
@@ -90,22 +86,15 @@ def main():
         if option == '1':
             books.addnewbook()
         elif option=='2':
-
-            books.issue_book()
-            
+            books.issue_book()  
         elif option=='3':
-            
             book_name=input("enter the book name to be returned : ")
-            
             for book in books.books:
                 if book[1]==book_name:
                     book[3]+=1
                     print(f"'{book_name}' has been returned successfully")
-                    break
-
-            
+                    break    
         elif option == '4':
-            
             book_name=input("enter the book name to check availability : ")
             for book in books.books:
                 if book[1]==book_name:
@@ -116,12 +105,8 @@ def main():
                     break
             else:
                 print(f"'{book_name}' does not exist in the library")
-            
-            
         elif option == '5':
-            
             books.view_all_books()
-
         elif option == '6':
             print("goodbye")
             break
